@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abol Garden Cafe | Escape the Noise, Sip in Nature</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            forest: '#234E3F',
+                            brown: '#6F4E37',
+                            gold: '#D6A75F',
+                            cream: '#F8F5F0',
+                            charcoal: '#2D2D2D',
+                            lightGreen: '#EAF0EC',
+                            goldHover: '#C4944C'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Poppins', 'Montserrat', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Alpine.js for lightweight state management and interactions -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F5F0;
+            color: #2D2D2D;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', 'Montserrat', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F8F5F0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #234E3F;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6F4E37;
+        }
+        /* Glassmorphism Classes */
+        .glass-nav {
+            background: rgba(35, 78, 63, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(214, 167, 95, 0.2);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(35, 78, 63, 0.08);
+        }
+        /* Masonry Grid Fixes */
+        .gallery-item {
+            break-inside: avoid;
+            margin-bottom: 1.5rem;
+        }
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        /* Safe content filter for loading/interactive states */
+        .tab-transition {
+            transition: all 5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body x-data="{ 
+    mobileMenuOpen: false, 
+    scrolled: false, 
+    activeTab: 'all', 
+    lightboxOpen: false, 
+    lightboxImg: '', 
+    lightboxCaption: '',
+    
+    selectedCategory: 'all',
+    menuNotification: false,
+    menuNotificationMsg: '',
+    copiedPlusCode: false,
+    timeStatus: 'Open Now',
+    checkStatus() {
+        const hour = new Date().getHours();
+        if(hour >= 7 && hour < 22) {
+            this.timeStatus = 'Open Now';
+        } else {
+            this.timeStatus = 'Closed • Opens 7:00 AM';
+        }
+    }
+}" x-init="checkStatus(); window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 })" class="relative">
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-brand-forest flex flex-col items-center justify-center transition-opacity duration-700 ease-out">
+        <div class="relative flex flex-col items-center">
+            <!-- Loading Indicator -->
+            <div class="w-20 h-20 border-4 border-brand-gold/30 border-t-brand-gold rounded-full animate-spin mb-4"></div>
+            <img src="https://i.postimg.cc/6qy67XsD/abolgarden.png" alt="Abol Garden Logo" class="w-24 h-24 object-contain animate-pulse">
+            <p class="text-brand-cream font-display tracking-widest text-sm mt-4 uppercase">Cultivating Serenity</p>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header :class="scrolled ? 'glass-nav py-3' : 'bg-transparent py-5'" class="fixed w-full top-0 left-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="#" class="flex items-center space-x-3 group">
+                    <img src="https://i.postimg.cc/6qy67XsD/abolgarden.png" alt="Abol Garden Cafe" class="h-12 w-auto transition-transform duration-300 group-hover:scale-105">
+                    <div class="flex flex-col">
+                        <span class="text-white font-display font-bold tracking-wider text-lg sm:text-xl leading-none">ABOL GARDEN</span>
+                        <span class="text-brand-gold font-sans font-semibold text-xs tracking-widest mt-0.5">CAFE</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Home</a>
+                    <a href="#about" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Our Vibe</a>
+                    <a href="#menu" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Menu</a>
+                    <a href="#gallery" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Gallery</a>
+                    <a href="#testimonials" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Reviews</a>
+                    <a href="#contact" class="text-brand-cream hover:text-brand-gold font-medium text-sm tracking-wide transition-colors duration-200">Contact</a>
+                </nav>
+
+                <!-- Action Button & Hamburger -->
+                <div class="flex items-center space-x-4">
+                    <a href="#contact" class="hidden lg:inline-flex items-center justify-center px-6 py-2.5 bg-brand-gold hover:bg-brand-goldHover text-brand-forest font-semibold font-display text-sm tracking-wide rounded-full shadow-lg transition-all duration-300 hover:shadow-brand-gold/20 hover:-translate-y-0.5">
+                        <i class="fa-solid fa-map-location-dot mr-2"></i> Visit Us
+                    </a>
+                    
+                    <!-- Mobile Hamburger Button -->
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-brand-cream focus:outline-none p-2 rounded-lg hover:bg-white/10 transition-colors" aria-label="Toggle navigation">
+                        <i :class="mobileMenuOpen ? 'fa-solid fa-xmark text-2xl' : 'fa-solid fa-bars text-2xl'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Navigation -->
+        <div x-show="mobileMenuOpen" 
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 -translate-y-4" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100 translate-y-0" 
+             x-transition:leave-end="opacity-0 -translate-y-4" 
+             class="md:hidden glass-nav absolute w-full left-0 top-full px-4 py-6 shadow-2xl space-y-4">
+            <a href="#home" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Home</a>
+            <a href="#about" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Our Vibe</a>
+            <a href="#menu" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Menu</a>
+            <a href="#gallery" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Gallery</a>
+            <a href="#testimonials" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Reviews</a>
+            <a href="#contact" @click="mobileMenuOpen = false" class="block text-brand-cream hover:text-brand-gold font-medium py-2.5 px-4 rounded-lg hover:bg-white/5 transition-all">Contact</a>
+            <div class="pt-4 border-t border-white/10">
+                <a href="#contact" @click="mobileMenuOpen = false" class="flex items-center justify-center w-full py-3 bg-brand-gold text-brand-forest font-bold rounded-xl shadow-lg">
+                    <i class="fa-solid fa-map-location-dot mr-2"></i> Visit Us Now
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-brand-forest">
+        <!-- Hero Background Slider/Overlay with premium high quality image of a garden cafe aesthetic -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://i.postimg.cc/fRKbg5vd/abol.jpg" alt="Beautiful Garden Cafe Ambiance" class="w-full h-full object-cover opacity-35 filter brightness-75 scale-105 transition-transform duration-10000">
+            <div class="absolute inset-0 bg-gradient-to-b from-brand-forest/90 via-transparent to-brand-cream"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <!-- Open/Closed Status Badge & Float Review Badge Container -->
+            <div class="flex flex-wrap justify-center items-center gap-3 mb-6">
+                <!-- Status Badge -->
+                <span :class="timeStatus.includes('Open') ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-rose-500/20 text-rose-300 border-rose-500/30'" 
+                      class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase border backdrop-blur-md">
+                    <span class="relative flex h-2.5 w-2.5">
+                        <span :class="timeStatus.includes('Open') ? 'bg-emerald-400' : 'bg-rose-400'" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"></span>
+                        <span :class="timeStatus.includes('Open') ? 'bg-emerald-500' : 'bg-rose-500'" class="relative inline-flex rounded-full h-2.5 w-2.5"></span>
+                    </span>
+                    <span x-text="timeStatus"></span>
+                </span>
+
+                <!-- Rating Badge -->
+                <div class="inline-flex items-center gap-1.5 px-4 py-1.5 bg-brand-gold/10 text-brand-gold border border-brand-gold/20 rounded-full text-xs font-semibold tracking-wide backdrop-blur-md">
+                    <i class="fa-solid fa-star"></i>
+                    <span class="text-white">4.9/5 Rating</span>
+                    <span class="opacity-60">(320+ Visitors)</span>
+                </div>
+            </div>
+
+            <!-- Main Headline -->
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-none mb-6">
+                Escape the Noise, <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-200">Sip in Nature</span>
+            </h1>
+
+            <!-- Subheadline -->
+            <comment-tag id="1"><p class="max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-brand-cream/90 font-light mb-10 leading-relaxed">
+                Experience pristine Ethiopian coffee craft, appetizing bites, and a breathtaking, instagram-worthy garden sanctuary in the heart of Soddo.
+            </p></comment-tag id="1" text="Let's weave the storytelling of 'Abol' (the historical first round of the traditional Ethiopian coffee ceremony) right here in the hero subheadline. It adds a premium, authentic brand origin that highlights your deep cultural roots alongside your garden vibe." type="suggestion">
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="#menu" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-brand-gold hover:bg-brand-goldHover text-brand-forest font-bold text-base tracking-wide rounded-full shadow-xl transition-all duration-300 hover:shadow-brand-gold/30 hover:-translate-y-1">
+                    Explore Our Menu <i class="fa-solid fa-arrow-right ml-2.5"></i>
+                </a>
+                <a href="#contact" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-transparent hover:bg-white/10 text-white font-semibold text-base tracking-wide rounded-full border border-white/40 hover:border-white transition-all duration-300 backdrop-blur-sm">
+                    Find Us Here
+                </a>
+            </div>
+
+            <!-- Floating Badge for Instagram-worthy Vibe -->
+            <div class="mt-16 md:mt-24 flex justify-center animate-float">
+                <div class="inline-flex items-center gap-4 bg-white/5 border border-white/10 backdrop-blur-md p-3.5 pr-6 rounded-2xl max-w-sm text-left">
+                    <div class="w-12 h-12 rounded-xl bg-brand-gold/20 flex items-center justify-center text-brand-gold text-xl flex-shrink-0">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-brand-gold uppercase tracking-wider">Instagram-Worthy Space</p>
+                        <p class="text-sm text-white font-medium">Tag <span class="text-brand-gold">#AbolGarden</span> for unique gifts!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Decorative curved divider -->
+        <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-[60px] fill-brand-cream">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V27.35C121.81,35,189.28,64.38,321.39,56.44Z"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Key Highlights / Badges Strip -->
+    <div class="bg-brand-cream py-6 border-b border-brand-forest/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-brand-forest/5 flex items-center justify-center text-brand-forest mb-2">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-forest">Eco Friendly Garden</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-brand-forest/5 flex items-center justify-center text-brand-forest mb-2">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-forest">Original Coffee Ritual</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-brand-forest/5 flex items-center justify-center text-brand-forest mb-2">
+                        <i class="fa-solid fa-wifi"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-forest">Super-Fast Wi-Fi</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full bg-brand-forest/5 flex items-center justify-center text-brand-forest mb-2">
+                        <i class="fa-solid fa-parking"></i>
+                    </div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-brand-forest">Free Reserved Parking</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section with Structured Feature Cards -->
+    <section id="about" class="py-20 bg-brand-cream relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-bold tracking-widest text-brand-gold uppercase block mb-3">Our Sanctuary</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-forest tracking-tight">
+                    Where Nature Meets Exceptional Brewing
+                </h2>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6 rounded-full"></div>
+                <p class="text-brand-charcoal/80 mt-6 leading-relaxed text-base sm:text-lg font-light">
+                    Inspired by the pristine botanical beauty of Ethiopia, Abol Garden Cafe offers a carefully curated escape. Dine, work, or unwind inside a masterfully designed green oasis built to celebrate fresh flavors and authentic hospitality.
+                </p>
+            </div>
+
+            <!-- Structured Amenity & Service Category Feature Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Service Options -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Dining & Service</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Beautiful outdoor garden seating
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Dine-In with immersive table service
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Convenient takeaway & drive-through
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            No-contact home & office delivery
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Exquisite Offerings -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-mug-saucer"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Our Offerings</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Abol custom craft espresso & coffee
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Premium wine & artisanal local alcohols
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Happy-hour food menu & quick bites
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Gourmet small plates & starters
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Inclusivity & Amenities -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-wheelchair"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Accessibility & Comfort</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Wheelchair-accessible entrance
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Wheelchair-accessible seating
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Clean, modern on-site restrooms
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Free parking lot & street parking
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 4: Perfect Vibe & Crowd -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-masks-theater"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Vibe & Community</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Trendy, cosy, and casual ambiance
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Perfect destination for tourists
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Co-working space for students
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Great for groups & solo diners
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 5: Highlights & Planning -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Event Planning</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Dedicated tea selections
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Accepts reservation bookings
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Highly popular for elegant dinners
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Spacious layout for large group parties
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 6: Children & Celebrations -->
+                <div class="glass-card p-8 rounded-3xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                    <div class="w-14 h-14 bg-brand-forest text-brand-gold rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md shadow-brand-forest/20">
+                        <i class="fa-solid fa-cake-candles"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-brand-forest mb-4">Kids & Birthday Parties</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Good for kids with play-safe elements
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Custom birthday event coordination
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Delectable kids-friendly menu items
+                        </li>
+                        <li class="flex items-center text-sm text-brand-charcoal">
+                            <span class="w-2 h-2 rounded-full bg-brand-gold mr-3"></span>
+                            Memorable photo backdrops
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Signature Menu Section -->
+    <section id="menu" class="py-20 bg-brand-forest text-brand-cream relative overflow-hidden" x-data="{ 
+        activeCategory: 'coffee',
+        menuSearch: '',
+        menuItems: [
+            { id: 1, category: 'coffee', name: 'Premium Abol Macchiato', price: 'ETB 140', desc: 'Crafted with premium high-altitude beans, featuring an exquisite, velvety milk crown.', img: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=400' },
+            { id: 2, category: 'coffee', name: 'Ethio Abol Buna', price: 'ETB 60', desc: 'Slept for 18 hours in filtered cold spring water, offering unmatched smooth berry notes.', img: 'https://i.postimg.cc/vZHGmNkN/Buna.jpg' },
+            { id: 3, category: 'coffee', name: 'Warm Honey Latte', price: 'ETB 160', desc: 'Premium espresso sweetened with wild forest honey and sprinkled with true cinnamon.', img: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&q=80&w=400' },
+            { id: 4, category: 'coffee', name: 'Ethiopian Spiced Tea', price: 'ETB 110', desc: 'A proprietary blend of black tea, cardamom, cinnamon, cloves, and loose mint leaves.', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=400' },
+            { id: 5, category: 'coffee', name: 'Blossom Chamomile Infusion', price: 'ETB 130', desc: 'Calming, whole organic chamomile flowers steeped with fresh garden lavender.', img: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=400' },
+
+            { id: 6, category: 'juices', name: 'Garden Harvest Green', price: 'ETB 190', desc: 'Cold pressed local cucumber, mint, spinach, Granny Smith apple, and ginger juice.', img: 'https://images.unsplash.com/photo-1628556260193-8dbfb3be6995?auto=format&fit=crop&q=80&w=400' },
+            { id: 7, category: 'juices', name: 'Tropical Soddo Sensation', price: 'ETB 170', desc: 'Fresh ripe mango, passionfruit, and a squeeze of mountain lime.', img: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&q=80&w=400' },
+            
+            { id: 8, category: 'tea', name: 'Cake', price: 'ETB 530', desc: 'We can make with your own design', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAHBeWk2VGS1j0SyF55LN1qbKcYbQVogDKaOH5MSwGjImparXPs1C_RTNj0W3_nGqHMLU6_WqlL0SNgVk5rEdAeLNVQ5BKFZ16MnpDzA_3w68QJxIBHJscztzaVRyrD8iQ52XnTW=w189-h246-p-k-no' },
+
+            { id: 9, category: 'tea', name: 'Blossom Chamomile Infusion', price: 'ETB 130', desc: 'Calming, whole organic chamomile flowers steeped with fresh garden lavender.', img: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&q=80&w=400' },
+       
+            { id: 10, category: 'breakfast', name: 'Abol Garden Special Chechebsa', price: 'ETB 250', desc: 'Traditional torn flatbread layered in spiced kibe butter, served with local forest honey.', img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&q=80&w=400' },
+            { id: 11, category: 'breakfast', name: 'Sourdough Smashed Avocado', price: 'ETB 290', desc: 'Fresh garden avocado with heirloom cherry tomatoes, goat cheese, and pumpkin seeds.', img: 'https://images.unsplash.com/photo-1541532713592-79a0317b6b77?auto=format&fit=crop&q=80&w=400' },
+            
+            { id: 12, category: 'sandwiches', name: 'Abol Special Combo', price: 'ETB 280', desc: 'Artisanal focaccia with rich buffalo mozzarella, organic garden tomatoes, and green basil pesto.', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAEYZVQx44qOpNSDc_smYLpNsddboryQGkjnsWbowl5meASk8EI76ONHggnMcbC6ChbvnekK0Llav3x7Ms_1S6CzYw64kk6hNAQF9M21Zi10BJUA3nNFKYXbhilc2TQRPSZb9mWc=w189-h246-p-k-no' },
+            { id: 13, category: 'sandwiches', name: 'Chicken Showarma with Rice', price: 'ETB 340', desc: 'Tender house-cured beef with caramelized onions and aged provolone on toasted sourdough.', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAFqeFO1ZjmI1FUETpoGCcJA5eK2EzkOZloHwv9F9d-G-ciMQkMPnLeqy7I2RWQZXwFuHZxwBR4NSoniPZUh05DR5Ckdz1QTQPgXfbvFScl0pn3uyJ4Gbnnu-V8LreD95ePkgO6x=w189-h246-p-k-no' },
+            
+            { id: 14, category: 'burgers', name: 'Cheese Burger', price: 'ETB 480', desc: 'Premium local beef patty, Swiss cheese, wild mushrooms, and luxurious truffle aioli.', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAH8pst0W13BABO9Jq8LhrWWOK3XtBkJDFDwMMkn2McpO-02UASbCXdZS1UWWdkNCPd4vexl5AZf9U4BvEgXBxAeABgr0DkVw6K1R3D_8k09LvPjbskbVju2BmIloMG41wCBURIc=w189-h246-p-k-no' },
+            { id: 15, category: 'burgers', name: 'Abol Big Burger', price: 'ETB 1200', desc: 'House recipe black bean & quinoa patty with avocado mash, alfalfa sprouts, and spicy chipotle.', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAF7sI8skh-R_i4PRmDQFTdPdNY3w4TDp_tidDyHz8MkwKulYmz8gCzVnw4GptTeTXdVjGXf7bByHvuPocgsZHBE031FepA6PzMCUWoMY8FcDzQIyASS6TibKR4xsCXaIyBXXw1f=w189-h246-p-k-no' },
+            
+            { id: 16, category: 'local', name: 'Abol Metiro Margherita', price: 'ETB 880', desc: 'A big absolute feast of seasoned lentils, split peas, cabbage, and spinach on injera bread.', img: 'https://lh3.googleusercontent.com/gps-cs-s/APNQkAHM865a_HdYO5kX2L3GOFnoYEsoPbyaXZvdZo7M0vXlVFXkC3Ow-0JcCLzWVzvBY3aU6Z4LcVgRE-CG2U3111LlgcW1IWTs_EG_yr08aJGYD-XXDhmeG9oSD8euBZ4D1miEb08=w123-h123-p-k-no' },
+            { id: 17, category: 'local', name: 'Special Pizza', price: 'ETB 450', desc: 'Perfectly pan-seared tender beef chunks with green chilies, onions, and rosemary sprigs.', img: 'https://i.postimg.cc/13gDbJBK/Pizza.jpg' }
+        ]
+    }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Section Title -->
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold tracking-widest text-brand-gold uppercase block mb-3">Our Offerings</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">The Garden Menu</h2>
+                <p class="text-brand-cream/80 mt-4 font-light">
+                    Every dish is carefully prepared using organic produce grown directly in local cooperative farms or in our private cafe herb gardens.
+                </p>
+                <div class="w-16 h-1 bg-brand-gold mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <!-- Filter Categories Slider (Highly Mobile Responsive) -->
+            <div class="flex overflow-x-auto pb-4 mb-10 no-scrollbar gap-2 justify-start lg:justify-center -mx-4 px-4">
+                <comment-tag id="2"><button @click="activeCategory = 'coffee'" :class="activeCategory === 'coffee' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Hot drinks</button></comment-tag id="2" text="To elevate accessibility standards and improve screen-reader integration for visually impaired customers, add aria-selected and role attributes to the filter buttons.
+  Example:
+  role='tab'
+  :aria-selected='activeCategory === \"coffee\" ? \"true\" : \"false\"'" type="suggestion">
+                <button @click="activeCategory = 'juices'" :class="activeCategory === 'juices' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Fresh Juices</button>
+                <button @click="activeCategory = 'tea'" :class="activeCategory === 'tea' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Cake</button>
+
+                <button @click="activeCategory = 'breakfast'" :class="activeCategory === 'breakfast' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Breakfast</button>
+                <button @click="activeCategory = 'sandwiches'" :class="activeCategory === 'sandwiches' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Sandwiches</button>
+                <button @click="activeCategory = 'burgers'" :class="activeCategory === 'burgers' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Burgers</button>
+                <button @click="activeCategory = 'local'" :class="activeCategory === 'local' ? 'bg-brand-gold text-brand-forest font-bold' : 'bg-white/5 text-white/80 hover:bg-white/10'" class="px-6 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300">Pizzas</button>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <template x-for="item in menuItems.filter(i => i.category === activeCategory)" :key="item.id">
+                    <div class="flex flex-col sm:flex-row gap-6 p-4 sm:p-5 rounded-3xl bg-white/5 border border-white/5 hover:border-brand-gold/20 transition-all duration-300 hover:bg-white/[0.08] group relative">
+                        <!-- Image Container with unique aspect ratio and elegant overlay -->
+                        <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden flex-shrink-0 relative">
+                            <img :src="item.img" :alt="item.name" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                            <span class="absolute top-2 right-2 bg-brand-forest/85 backdrop-blur-md text-brand-gold font-bold text-xs py-1 px-2 rounded-lg" x-text="item.price"></span>
+                        </div>
+                        
+                        <!-- Content details -->
+                        <div class="flex-grow flex flex-col justify-center">
+                            <div class="flex justify-between items-start">
+                                <h3 class="text-lg font-bold text-white group-hover:text-brand-gold transition-colors duration-200" x-text="item.name"></h3>
+                            </div>
+                            <p class="text-sm text-brand-cream/70 mt-2 font-light leading-relaxed" x-text="item.desc"></p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <span class="text-xs font-semibold text-brand-gold uppercase tracking-wider"><i class="fa-solid fa-leaf mr-1"></i> Fresh Organic</span>
+                                <button @click="menuNotificationMsg = 'Added ' + item.name + ' to preferences!'; menuNotification = true; setTimeout(() => { menuNotification = false }, 2500)" class="text-xs text-brand-cream/50 hover:text-brand-gold transition-colors flex items-center gap-1.5 p-1.5 rounded-lg hover:bg-white/5">
+                                    <i class="fa-regular fa-heart"></i> Add to Favs
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+
+        </div>
+
+        <!-- Notification Banner -->
+        <div x-show="menuNotification" 
+             x-transition:enter="transition ease-out duration-300" 
+             x-transition:enter-start="opacity-0 translate-y-10" 
+             x-transition:enter-end="opacity-100 translate-y-0" 
+             x-transition:leave="transition ease-in duration-200" 
+             x-transition:leave-start="opacity-100 translate-y-0" 
+             x-transition:leave-end="opacity-0 translate-y-10" 
+             class="fixed bottom-6 right-6 z-[80] bg-brand-gold text-brand-forest px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-brand-gold/30">
+            <i class="fa-solid fa-check-circle text-lg"></i>
+            <span class="text-sm font-bold" x-text="menuNotificationMsg"></span>
+        </div>
+    </section>
+
+    <!-- Custom Masonry Gallery Section -->
+    <section id="gallery" class="py-20 bg-brand-cream">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-xs font-bold tracking-widest text-brand-gold uppercase block mb-3">Aesthetic Vibe</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-forest tracking-tight">Gallery of Abol</h2>
+                <p class="text-brand-charcoal/80 mt-4 font-light">
+                    Step inside our peaceful garden, witness our artisan coffee preparation, and browse through our guest celebrations.
+                </p>
+                <div class="w-16 h-1 bg-brand-gold mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <!-- Premium Masonry Grid -->
+            <div class="columns-1 sm:columns-2 lg:columns-3 gap-6">
+                
+                <!-- Gallery Item 1 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1543007630-9710e4a00a20?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Elegant Outdoor Seating Oasis'">
+                    <img src="https://i.postimg.cc/ncT63YcS/abol-2.jpg" alt="Garden Oasis" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Outdoor Seating</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Garden Oasis Ambiance</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Barista Espresso Ritual'">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=600" alt="Barista Espresso Ritual" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Artisan Bar</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Perfect Handcrafted Brewing</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Charming Ambiance in the Evening'">
+                    <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&q=80&w=600" alt="Charming Ambiance" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Atmosphere</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Cozy Evening Lanterns</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Premium Hot Spiced Tea Blend'">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=600" alt="Hot Spiced Tea" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Selections</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Spiced Herbal Tea Brew</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 5 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Freshly Sliced Handcrafted Pizza'">
+                    <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=600" alt="Handcrafted Pizza" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Food Menu</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Woodfired Organic Delicacies</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 6 -->
+                <div class="gallery-item relative overflow-hidden rounded-3xl group cursor-pointer shadow-lg hover:shadow-2xl transition-all duration-300"
+                     @click="lightboxOpen = true; lightboxImg = 'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&q=80&w=800'; lightboxCaption = 'Vibrant Customer Connection'">
+                    <img src="https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?auto=format&fit=crop&q=80&w=600" alt="Customer Connection" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-forest via-brand-forest/40 to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-300 flex items-end p-6">
+                        <div>
+                            <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">Customer Experience</span>
+                            <h4 class="text-white text-lg font-bold mt-1">Where Stories Are Shared</h4>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Fully Accessible Lightbox Container -->
+        <div x-show="lightboxOpen" 
+             class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4 transition-all duration-300"
+             x-transition
+             @keydown.escape.window="lightboxOpen = false">
+            
+            <!-- Close Button -->
+            <button @click="lightboxOpen = false" class="absolute top-6 right-6 text-white hover:text-brand-gold text-3xl transition-colors focus:outline-none p-2">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Lightbox Main Image -->
+            <div class="max-w-4xl max-h-[80vh] overflow-hidden rounded-2xl shadow-2xl relative mb-4">
+                <img :src="lightboxImg" :alt="lightboxCaption" class="w-full h-auto max-h-[75vh] object-contain">
+            </div>
+
+            <!-- Lightbox Description -->
+            <p class="text-brand-cream text-lg font-medium text-center" x-text="lightboxCaption"></p>
+        </div>
+    </section>
+
+    <!-- Interactive Testimonial Section (Auto-sliding Carousel) -->
+    <section id="testimonials" class="py-20 bg-brand-forest text-brand-cream relative overflow-hidden" x-data="{
+        currentIndex: 0,
+        testimonials: [
+            { name: 'Helen Semeneh', role: 'Soddo Resident', text: 'Abol Garden is absolutely phenomenal. The wheelchair accessibility made it incredibly easy for my grandfather to join our family gathering, and the garden vibe was stunning.', stars: 5 },
+            { name: 'Dr. Michael Kebede', role: 'University Professor', text: 'Hands down, the best coffee and remote working space in Soddo. Superb, professional customer table service and reliable high-speed fiber internet.', stars: 5 },
+            { name: 'Sophia Almaz', role: 'Travel Blogger', text: 'I felt like I stepped into a high-end luxury resort in Addis. The Spiced Tea is spectacular, and the garden landscaping is completely photo-ready.', stars: 5 }
+        ],
+        next() { this.currentIndex = (this.currentIndex + 1) % this.testimonials.length },
+        prev() { this.currentIndex = (this.currentIndex - 1 + this.testimonials.length) % this.testimonials.length },
+        init() { setInterval(() => this.next(), 6000) }
+    }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <span class="text-xs font-bold tracking-widest text-brand-gold uppercase block mb-3">Happy Visitors</span>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">Voices of Abol</h2>
+                <div class="w-16 h-1 bg-brand-gold mx-auto mt-6 rounded-full"></div>
+            </div>
+
+            <!-- Testimonials Slider -->
+            <div class="relative max-w-4xl mx-auto">
+                
+                <!-- Slide Container -->
+                <div class="overflow-hidden relative min-h-[280px] sm:min-h-[220px]">
+                    <template x-for="(testimonial, index) in testimonials" :key="index">
+                        <div x-show="currentIndex === index" 
+                             x-transition:enter="transition ease-out duration-500" 
+                             x-transition:enter-start="opacity-0 scale-95" 
+                             x-transition:enter-end="opacity-100 scale-100" 
+                             class="absolute w-full h-full flex flex-col justify-center items-center text-center px-4">
+                            
+                            <!-- Star Rating -->
+                            <div class="flex items-center gap-1.5 text-brand-gold text-lg mb-6">
+                                <template x-for="i in testimonial.stars">
+                                    <i class="fa-solid fa-star"></i>
+                                </template>
+                            </div>
+
+                            <!-- Quote Text -->
+                            <p class="text-lg sm:text-2xl font-light leading-relaxed text-brand-cream/90 italic mb-8 max-w-3xl">
+                                &ldquo;<span x-text="testimonial.text"></span>&rdquo;
+                            </p>
+
+                            <!-- Author details -->
+                            <div>
+                                <h4 class="text-base sm:text-lg font-bold text-white tracking-wide" x-text="testimonial.name"></h4>
+                                <p class="text-xs sm:text-sm text-brand-gold mt-1 uppercase tracking-wider" x-text="testimonial.role"></p>
+                            </div>
+
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="flex justify-center items-center gap-6 mt-10">
+                    <button @click="prev()" class="w-12 h-12 rounded-full border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold transition-colors flex items-center justify-center focus:outline-none">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                    <!-- Indicators -->
+                    <div class="flex items-center gap-2">
+                        <template x-for="(t, idx) in testimonials">
+                            <button @click="currentIndex = idx" :class="currentIndex === idx ? 'bg-brand-gold w-6' : 'bg-white/30 w-2.5'" class="h-2.5 rounded-full transition-all duration-300"></button>
+                        </template>
+                    </div>
+                    <button @click="next()" class="w-12 h-12 rounded-full border border-white/20 hover:border-brand-gold text-white hover:text-brand-gold transition-colors flex items-center justify-center focus:outline-none">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Map & Location Contact Section -->
+    <section id="contact" class="py-20 bg-brand-cream text-brand-charcoal relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
+                
+                <!-- Contact Info Column (Left) -->
+                <div class="lg:col-span-5 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold tracking-widest text-brand-gold uppercase block mb-3">Reach Out</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-forest tracking-tight">Visit Our Garden</h2>
+                        <p class="text-brand-charcoal/80 mt-4 font-light leading-relaxed">
+                            We are located in Soddo, Southern Ethiopia region, Ethiopia. Come experience premium serenity.
+                        </p>
+                        <div class="w-16 h-1 bg-brand-gold mt-6 mb-10 rounded-full"></div>
+
+                        <!-- Info details List -->
+                        <div class="space-y-6">
+                            
+                            <!-- Address -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">Address</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium">Soddo Main Highway, Southern Ethiopia region, Ethiopia</p>
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <span class="text-xs bg-brand-forest/5 border border-brand-forest/10 px-2.5 py-1 rounded text-brand-forest font-mono">VQ35+R4 Soddo</span>
+                                        <button @click="navigator.clipboard.writeText('VQ35+R4 Soddo'); copiedPlusCode = true; setTimeout(() => copiedPlusCode = false, 2000)" class="text-xs text-brand-gold hover:text-brand-goldHover transition-colors flex items-center gap-1">
+                                            <i class="fa-regular" :class="copiedPlusCode ? 'fa-check-circle text-emerald-600' : 'fa-copy'"></i>
+                                            <span x-text="copiedPlusCode ? 'Copied' : 'Copy'"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-solid fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">Phone Bookings</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium hover:text-brand-gold transition-colors">
+                                        <a href="tel:+251970193549">+251 970 193 549</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Telegram link -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-brands fa-telegram"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">Telegram Channel</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium hover:text-brand-gold transition-colors">
+                                        <a href="https://t.me/AbolGardenCafe" target="_blank">@AbolGardenCafe</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Instagram link -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-brands fa-instagram"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">Instagram</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium hover:text-brand-gold transition-colors">
+                                        <a href="https://instagram.com/abolgarden" target="_blank">@abolgarden</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Tiktok link -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-brands fa-tiktok"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">TikTok</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium hover:text-brand-gold transition-colors">
+                                        <a href="https://www.tiktok.com/@abol.garden.cafe" target="_blank">@abolgarden</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Timing -->
+                            <div class="flex items-start gap-4">
+                                <div class="w-11 h-11 bg-brand-forest text-brand-gold rounded-xl flex items-center justify-center text-lg flex-shrink-0">
+                                    <i class="fa-regular fa-clock"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-bold text-brand-forest uppercase tracking-wider">Business Hours</h4>
+                                    <p class="text-sm mt-1 text-brand-charcoal font-medium">Monday &mdash; Sunday: 7:00 AM &mdash; 10:00 PM</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Action Link Buttons -->
+                    <div class="mt-10 pt-8 border-t border-brand-forest/5 flex flex-wrap gap-4">
+                        <a href="https://maps.google.com/?q=VQ35+R4+Soddo" target="_blank" class="inline-flex items-center justify-center px-6 py-3 bg-brand-forest hover:bg-brand-brown text-white font-bold text-xs tracking-widest uppercase rounded-full shadow-lg transition-all duration-300">
+                            <i class="fa-solid fa-directions mr-2"></i> Get Directions
+                        </a>
+                        
+                    </div>
+                </div>
+
+                <!-- Custom Map Placeholder / Booking Form Column (Right) -->
+                <div class="lg:col-span-7">
+                    <div class="relative h-full min-h-[400px] rounded-3xl overflow-hidden shadow-xl border border-brand-forest/10 bg-brand-forest">
+                        
+                        <!-- Map Layer -->
+                        <div class="absolute inset-0 bg-slate-900 overflow-hidden">
+                            <!-- High quality static satellite background with cafe pin marker design -->
+                            <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=1200" alt="Soddo City Map" class="w-full h-full object-cover opacity-30 filter contrast-125">
+                            
+                            <!-- Custom pulsing pin and marker interface -->
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <!-- Marker -->
+                                <div class="relative flex h-16 w-16 items-center justify-center">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-gold opacity-75"></span>
+                                    <div class="relative rounded-full h-12 w-12 bg-brand-forest border-2 border-brand-gold flex items-center justify-center text-brand-gold shadow-2xl">
+                                        <i class="fa-solid fa-mug-hot text-xl animate-bounce"></i>
+                                    </div>
+                                </div>
+                                <!-- Marker Box -->
+                                <div class="mt-4 bg-brand-forest/95 backdrop-blur-md border border-brand-gold/30 p-4 rounded-2xl max-w-xs text-center shadow-2xl mx-4">
+                                    <h4 class="text-white font-bold text-sm tracking-wide">Abol Garden Cafe</h4>
+                                    <p class="text-brand-cream/80 text-xs mt-1">Soddo Main Highway, Soddo, Ethiopia</p>
+                                    <p class="text-brand-gold text-xs font-mono font-bold mt-2">Plus Code: VQ35+R4 Soddo</p>
+                                    <a href="https://maps.google.com/?q=VQ35+R4+Soddo" target="_blank" class="inline-flex items-center text-xs text-brand-gold hover:underline mt-3 font-semibold">
+                                        Open in Google Maps <i class="fa-solid fa-external-link ml-1.5 text-[10px]"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-brand-forest text-brand-cream border-t border-brand-gold/20 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+                
+                <!-- Brand Description Column -->
+                <div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <img src="https://i.postimg.cc/6qy67XsD/abolgarden.png" alt="Abol Garden Cafe" class="h-12 w-auto">
+                        <div class="flex flex-col">
+                            <span class="text-white font-display font-bold tracking-wider text-base sm:text-lg leading-none">ABOL GARDEN</span>
+                            <span class="text-brand-gold font-sans font-semibold text-xs tracking-widest mt-0.5">CAFE</span>
+                        </div>
+                    </div>
+                    <p class="text-brand-cream/70 text-sm font-light leading-relaxed">
+                        A modern nature-inspired botanical garden coffee brand built with an uncompromising commitment to pristine brewing excellence and customer inclusivity.
+                    </p>
+                    <div class="mt-6 flex items-center gap-3">
+                        <a href="https://t.me/AbolGardenCafe" target="_blank" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-brand-cream hover:bg-brand-gold hover:text-brand-forest transition-all flex items-center justify-center text-sm" aria-label="Telegram">
+                            <i class="fa-brands fa-telegram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-brand-cream hover:bg-brand-gold hover:text-brand-forest transition-all flex items-center justify-center text-sm" aria-label="Instagram">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/5 border border-white/10 text-brand-cream hover:bg-brand-gold hover:text-brand-forest transition-all flex items-center justify-center text-sm" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Fast Links -->
+                <div>
+                    <h4 class="text-brand-gold font-bold text-sm uppercase tracking-widest mb-6">Quick Navigation</h4>
+                    <ul class="space-y-3.5 text-sm font-light">
+                        <li><a href="#home" class="text-brand-cream/75 hover:text-brand-gold transition-colors">Home Experience</a></li>
+                        <li><a href="#about" class="text-brand-cream/75 hover:text-brand-gold transition-colors">Our Garden Vibe</a></li>
+                        <li><a href="#menu" class="text-brand-cream/75 hover:text-brand-gold transition-colors">Botanist Menu</a></li>
+                        <li><a href="#gallery" class="text-brand-cream/75 hover:text-brand-gold transition-colors">Photo Showcase</a></li>
+                        <li><a href="#testimonials" class="text-brand-cream/75 hover:text-brand-gold transition-colors">Guest Reviews</a></li>
+                    </ul>
+                </div>
+
+                <!-- Accessibility / Services -->
+                <div>
+                    <h4 class="text-brand-gold font-bold text-sm uppercase tracking-widest mb-6">Services Available</h4>
+                    <ul class="space-y-3.5 text-sm font-light text-brand-cream/75">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold text-xs"></i> Outdoor Garden seating</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold text-xs"></i> Wheelchair Access Entrance</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold text-xs"></i> Drive-Through Services</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold text-xs"></i> Professional Table service</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-gold text-xs"></i> Local Home Delivery</li>
+                    </ul>
+                </div>
+
+                <!-- Direct Contact Information -->
+                <div>
+                    <h4 class="text-brand-gold font-bold text-sm uppercase tracking-widest mb-6">Abol Soddo Hub</h4>
+                    <p class="text-brand-cream/70 text-sm font-light mb-4 leading-relaxed">
+                        Soddo Main Highway, Southern Ethiopia region, Ethiopia. Near major OMO Micro finance.
+                    </p>
+                    <p class="text-brand-cream text-sm font-medium mb-2">
+                        <i class="fa-solid fa-phone text-brand-gold mr-2"></i> <a href="tel:+251912345678" class="hover:underline">+251 912 345 678</a>
+                    </p>
+                    <p class="text-brand-cream text-sm font-medium mb-2">
+                        <i class="fa-brands fa-telegram text-brand-gold mr-2"></i> <a href="https://t.me/AbolGardenCafe" target="_blank" class="hover:underline">@AbolGardenCafe</a>
+                    </p>
+                    <p class="text-brand-cream text-sm font-medium">
+                        <i class="fa-regular fa-clock text-brand-gold mr-2"></i> Mon - Sun: 7 AM - 10 PM
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Divider Line -->
+            <div class="h-px bg-white/10 my-12"></div>
+
+            <!-- Copyright and Credits -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs font-light text-brand-cream/50">
+                <p>&copy; 2026 Abol Garden Cafe. All rights reserved.</p>
+                <div class="flex items-center gap-1">
+                    <span>Powered by:</span>
+                    <span class="text-brand-gold font-bold tracking-wider">ExSofos System GEN</span>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Floating Telegram Shortcut Button -->
+    <a href="https://t.me/AbolGardenCafe" target="_blank" 
+       class="fixed bottom-6 left-6 z-50 w-14 h-14 bg-sky-500 hover:bg-sky-600 text-white rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110 group" 
+       aria-label="Contact Telegram">
+        <i class="fa-brands fa-telegram text-2xl group-hover:rotate-12 transition-transform"></i>
+        <span class="absolute left-16 bg-brand-forest text-white text-xs font-semibold px-3 py-1.5 rounded-lg shadow-xl opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all whitespace-nowrap border border-brand-gold/20">Chat on Telegram</span>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" 
+            x-show="scrolled"
+            x-transition
+            class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-brand-forest hover:bg-brand-brown border border-brand-gold/30 text-brand-gold rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110" 
+            aria-label="Back to Top">
+        <i class="fa-solid fa-arrow-up text-lg"></i>
+    </button>
+ 
+
+    <!-- Page Loading Animation Handler -->
+    <script>
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.classList.add('opacity-0');
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 700);
+            }
+        });
+    </script>
+</body>
+</html>
